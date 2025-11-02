@@ -8,12 +8,14 @@ import { Skeleton } from '@/shared/components/ui/skeleton';
 import { CheckCircle2, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { SummaryState } from '../domain/types';
+import { Button } from '@/shared/components/ui/button';
 
 interface StreamingSummaryProps {
   state: SummaryState;
+  reset: () => void;
 }
 
-export function StreamingSummary({ state }: StreamingSummaryProps) {
+export function StreamingSummary({ state, reset }: StreamingSummaryProps) {
   const { summary, isStreaming, isComplete, tokensUsed, cost, model, error } = state;
 
   if (error) {
@@ -27,6 +29,9 @@ export function StreamingSummary({ state }: StreamingSummaryProps) {
           <CardHeader>
             <CardTitle className="text-destructive">Error</CardTitle>
             <CardDescription>{error}</CardDescription>
+            <Button variant="outline" onClick={() => reset()}>
+              Retry
+            </Button>
           </CardHeader>
         </Card>
       </motion.div>

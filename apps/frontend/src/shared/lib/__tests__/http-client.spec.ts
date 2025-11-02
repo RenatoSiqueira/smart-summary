@@ -10,7 +10,7 @@ describe('http-client', () => {
     global.fetch = vi.fn();
     process.env = {
       ...originalEnv,
-      NEXT_PUBLIC_API_URL: 'http://localhost:3000',
+      API_URL: 'http://localhost:3001',
       API_KEY: 'test-api-key',
     };
   });
@@ -34,7 +34,7 @@ describe('http-client', () => {
 
       const result = await fetchFromBackend<typeof mockData>('/api/test');
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/test', {
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/test', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -55,7 +55,7 @@ describe('http-client', () => {
       await fetchFromBackend('/api/test');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/test',
+        'http://localhost:3001/api/test',
         expect.any(Object),
       );
     });
@@ -72,7 +72,7 @@ describe('http-client', () => {
 
       await fetchFromBackend('/api/test', { apiKey: 'custom-key' });
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/test', {
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/test', {
         headers: {
           'Content-Type': 'application/json',
           'X-API-Key': 'custom-key',
@@ -96,7 +96,7 @@ describe('http-client', () => {
         },
       });
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/test', {
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/test', {
         headers: {
           'Content-Type': 'application/json',
           'X-Custom-Header': 'custom-value',
@@ -120,7 +120,7 @@ describe('http-client', () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/test',
+        'http://localhost:3001/api/test',
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({ test: 'data' }),

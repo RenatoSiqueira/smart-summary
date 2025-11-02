@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getApiKey } from '@/shared/lib/http-client';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const BACKEND_URL = process.env.API_URL || 'http://localhost:3001';
 
 /**
  * POST /api/summarize

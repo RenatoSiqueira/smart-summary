@@ -18,7 +18,7 @@ describe('POST /api/summarize', () => {
     global.fetch = vi.fn();
     process.env = {
       ...originalEnv,
-      NEXT_PUBLIC_API_URL: 'http://localhost:3000',
+      API_URL: 'http://localhost:3001',
     };
   });
 
@@ -62,7 +62,7 @@ describe('POST /api/summarize', () => {
     expect(response.headers.get('Connection')).toBe('keep-alive');
     expect(mockGetApiKey).toHaveBeenCalled();
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:3000/api/summary',
+      'http://localhost:3001/api/summary',
       {
         method: 'POST',
         headers: {
@@ -262,7 +262,7 @@ describe('POST /api/summarize', () => {
     await POST(request);
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:3000/api/summary',
+      'http://localhost:3001/api/summary',
       expect.any(Object),
     );
   });

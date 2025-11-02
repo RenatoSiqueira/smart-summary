@@ -40,7 +40,10 @@ export default function HomePage() {
               )}
 
               {hasStarted && (
-                <StreamingSummary state={state} />
+                <StreamingSummary
+                  state={state}
+                  reset={handleReset}
+                />
               )}
 
               {state.isComplete && (

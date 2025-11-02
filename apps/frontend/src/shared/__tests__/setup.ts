@@ -17,7 +17,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 // Setup environment variables for tests
-process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000';
+process.env.API_URL = 'http://localhost:3001';
 process.env.API_KEY = 'test-api-key';
 
 // Mock window.matchMedia
