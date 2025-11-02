@@ -339,6 +339,7 @@ export abstract class BaseLLMService implements ILLMService {
       Formatting:
       - Use bullet points when possible unless a short paragraph is more natural.
       - If there are action items or decisions, include a section titled “Action Items” or “Key Decisions”.
+      - Use markdown formatting for the summary.
       `,
       },
       {
