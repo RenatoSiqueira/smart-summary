@@ -67,7 +67,164 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  /* Improved typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Better focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border/80;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    body {
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    /* Better touch targets */
+    button,
+    [role='button'],
+    input,
+    select,
+    textarea {
+      min-height: 44px;
+    }
+
+    /* Improved text readability */
+    p,
+    li,
+    span {
+      line-height: 1.6;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: 0 0% 20%;
+      --input: 0 0% 20%;
+    }
+
+    .dark {
+      --border: 0 0% 80%;
+      --input: 0 0% 80%;
+    }
+  }
+}
+
+@layer components {
+  /* Glassmorphism utility */
+  .glass {
+    @apply bg-background/80 backdrop-blur-xl border border-border/50;
+  }
+
+  /* Gradient text utility */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+  }
+
+  /* Animated gradient background */
+  .animated-gradient {
+    background: linear-gradient(
+      -45deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.8),
+      hsl(var(--primary) / 0.6),
+      hsl(var(--primary) / 0.4)
+    );
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Floating animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Pulse glow effect */
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    from {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    }
+    to {
+      box-shadow:
+        0 0 30px hsl(var(--primary) / 0.5),
+        0 0 40px hsl(var(--primary) / 0.2);
+    }
   }
 }
