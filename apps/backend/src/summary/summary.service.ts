@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Observable } from 'rxjs';
@@ -9,6 +9,8 @@ import { StreamChunk, SummarizeOptions } from '../llm/interfaces';
 
 @Injectable()
 export class SummaryService {
+  private readonly logger = new Logger(SummaryService.name);
+
   constructor(
     @InjectRepository(SummaryRequest)
     private readonly summaryRequestRepository: Repository<SummaryRequest>,
@@ -53,6 +55,7 @@ export class SummaryService {
     options?: SummarizeOptions,
   ): Observable<StreamChunk> {
     let summaryRequest: SummaryRequest | null = null;
+    let isCompleted = false;
 
     return new Observable<StreamChunk>((subscriber) => {
       this.createSummaryRequest(text, clientIp)
@@ -80,14 +83,24 @@ export class SummaryService {
                   errorSubscriber.error(error);
                 });
               }),
-              finalize(async () => {}),
+              finalize(async () => {
+                // Only update if stream didn't complete successfully
+                // The update is already handled in the 'complete' chunk handler
+                if (summaryRequest && !isCompleted) {
+                  this.logger.warn(
+                    `Stream finalized without completion for request ${summaryRequest.id}`,
+                  );
+                }
+              }),
             )
             .subscribe({
               next: (chunk: StreamChunk) => {
                 subscriber.next(chunk);
 
                 if (chunk.type === 'complete' && chunk.data && summaryRequest) {
+                  isCompleted = true;
                   const { summary, tokensUsed, cost } = chunk.data;
+                  // Wait for update to complete before marking as done
                   this.updateSummaryRequest(
                     summaryRequest.id,
                     summary,
@@ -95,7 +108,10 @@ export class SummaryService {
                     cost,
                     new Date(),
                   ).catch((error) => {
-                    console.error('Failed to update summary request:', error);
+                    this.logger.error(
+                      `Failed to update summary request ${summaryRequest?.id}:`,
+                      error,
+                    );
                   });
                 }
               },
@@ -138,7 +154,7 @@ export class SummaryService {
           ? error.name || error.constructor?.name || 'Error'
           : 'UnknownError';
 
-      console.error(`[SummaryService] Summary request ${requestId} failed:`, {
+      this.logger.error(`Summary request ${requestId} failed:`, {
         requestId,
         errorType,
         errorMessage,
@@ -150,8 +166,8 @@ export class SummaryService {
         completedAt: new Date(),
       });
     } catch (updateError) {
-      console.error(
-        `[SummaryService] Failed to update error info for request ${requestId}:`,
+      this.logger.error(
+        `Failed to update error info for request ${requestId}:`,
         updateError,
       );
     }

@@ -11,11 +11,23 @@ import { AppConfig } from '../config/config.interface';
       useFactory: (configService: ConfigService<{ app: AppConfig }>) => {
         const appConfig = configService.get<AppConfig>('app')!;
         const nodeEnv = appConfig.environment;
+        const databaseUrl = appConfig.database.url;
+
+        // Determine if SSL should be enabled
+        // Disable SSL for local/internal database connections (postgres, localhost, 127.0.0.1)
+        // Enable SSL only for production external database connections
+        const isLocalDatabase = /postgres|localhost|127\.0\.0\.1/.test(
+          databaseUrl,
+        );
+        const sslEnabled = nodeEnv === 'production' && !isLocalDatabase;
 
         return {
           type: 'postgres',
-          url: appConfig.database.url,
-          entities: [__dirname + '/entities/**/*.entity{.ts,.js}'],
+          url: databaseUrl,
+          entities: [
+            __dirname + '/entities/**/*.entity{.ts,.js}',
+            __dirname + '/../**/*.entity{.ts,.js}',
+          ],
           migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
           synchronize: false,
           logging:
@@ -24,7 +36,7 @@ import { AppConfig } from '../config/config.interface';
               : ['error', 'warn'],
           migrationsRun: false,
           migrationsTableName: 'migrations',
-          ssl: nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+          ssl: sslEnabled ? { rejectUnauthorized: false } : false,
         };
       },
     }),

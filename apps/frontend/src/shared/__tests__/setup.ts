@@ -1,6 +1,19 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
+// Suppress console messages during tests while keeping methods available for spying
+const originalConsole = global.console;
+global.console = {
+  ...originalConsole,
+  log: vi.fn(() => {}),
+  debug: vi.fn(() => {}),
+  info: vi.fn(() => {}),
+  warn: vi.fn(() => {}),
+  // Keep error available for tests that need to spy on it
+  // but suppress output by default
+  error: vi.fn(() => {}),
+};
+
 // Mock Next.js router
 vi.mock('next/navigation', () => ({
   useRouter: () => ({

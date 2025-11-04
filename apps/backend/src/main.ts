@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { AppConfig } from './config/config.interface';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+
   const app = await NestFactory.create(AppModule);
 
   const configService =
@@ -14,8 +16,24 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  // CORS configuration with proper validation
+  const allowedOrigins =
+    process.env.NODE_ENV === 'production'
+      ? process.env.ALLOWED_ORIGINS?.split(',').filter(Boolean) || []
+      : true;
+
+  if (
+    process.env.NODE_ENV === 'production' &&
+    Array.isArray(allowedOrigins) &&
+    allowedOrigins.length === 0
+  ) {
+    throw new Error(
+      'ALLOWED_ORIGINS must be configured in production environment',
+    );
+  }
+
   app.enableCors({
-    origin: true,
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
@@ -37,6 +55,6 @@ async function bootstrap() {
   const port = appConfig.port;
   await app.listen(port);
 
-  console.log(`Application is running on: http://localhost:${port}/api`);
+  logger.log(`Application is running on: http://localhost:${port}/api`);
 }
 bootstrap();

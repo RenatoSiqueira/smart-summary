@@ -8,7 +8,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { SummaryService } from './summary.service';
 import { SummarizeRequestDto } from './dto/summarize-request.dto';
@@ -50,9 +50,28 @@ export class SummaryController {
 
     let subscription: Subscription | null = null;
 
-    res.on('close', () => {
+    // Timeout configuration (5 minutes)
+    const STREAM_TIMEOUT_MS = 5 * 60 * 1000;
+    const timeout = setTimeout(() => {
+      if (!res.closed) {
+        const timeoutChunk: StreamChunk = {
+          type: 'error',
+          error: 'Request timeout after 5 minutes',
+        };
+        res.write(this.formatSSE(timeoutChunk));
+        res.end();
+      }
       if (subscription) {
         subscription.unsubscribe();
+        subscription = null;
+      }
+    }, STREAM_TIMEOUT_MS);
+
+    res.on('close', () => {
+      clearTimeout(timeout);
+      if (subscription) {
+        subscription.unsubscribe();
+        subscription = null;
       }
     });
 
@@ -69,7 +88,7 @@ export class SummaryController {
                 ? error.message
                 : 'An unexpected error occurred',
           };
-          return [this.formatSSE(errorChunk)];
+          return of(this.formatSSE(errorChunk));
         }),
       )
       .subscribe({
@@ -79,6 +98,7 @@ export class SummaryController {
           }
         },
         error: (error: Error) => {
+          clearTimeout(timeout);
           const errorChunk: StreamChunk = {
             type: 'error',
             error: error.message || 'An unexpected error occurred',
@@ -89,6 +109,7 @@ export class SummaryController {
           }
         },
         complete: () => {
+          clearTimeout(timeout);
           if (!res.closed) {
             res.end();
           }

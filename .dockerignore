@@ -1,0 +1,59 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+**/dist
+.next
+**/.next
+coverage
+**/coverage
+
+# Environment files
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+**/__tests__
+**/*.spec.ts
+**/*.spec.js
+**/*.test.ts
+**/*.test.js
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Misc
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+

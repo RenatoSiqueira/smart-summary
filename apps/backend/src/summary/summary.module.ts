@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { SummaryController } from './summary.controller';
 import { SummaryService } from './summary.service';
-import { SummaryRequest } from '../database/entities/summary-request.entity';
+import { SummaryRequest } from '../summary/entities/summary-request.entity';
 import { LLMModule } from '../llm/llm.module';
 
 @Module({

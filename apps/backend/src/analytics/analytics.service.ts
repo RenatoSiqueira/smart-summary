@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SummaryRequest } from '../database/entities/summary-request.entity';
+import { SummaryRequest } from '../summary/entities/summary-request.entity';
 import { AnalyticsResponseDto } from './dto/analytics-response.dto';
 import { DailyMetric } from '@smart-summary/types';
 

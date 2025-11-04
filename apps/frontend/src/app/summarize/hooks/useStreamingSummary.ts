@@ -145,6 +145,7 @@ export function useStreamingSummary(
       summary: '',
       isStreaming: false,
       isComplete: false,
+      error: undefined,
     });
   }, [stopStreaming]);
 

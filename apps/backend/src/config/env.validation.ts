@@ -5,6 +5,7 @@ import {
   IsOptional,
   validateSync,
   IsNotEmpty,
+  ValidateIf,
 } from 'class-validator';
 
 export enum Environment {
@@ -38,9 +39,10 @@ class EnvironmentVariables {
   @IsOptional()
   OPENAI_API_KEY?: string;
 
+  @ValidateIf((o) => o.OPENAI_API_KEY !== undefined)
   @IsString()
   @IsNotEmpty()
-  OPENAI_DEFAULT_MODEL: string;
+  OPENAI_DEFAULT_MODEL?: string;
 
   @IsString()
   @IsNotEmpty()

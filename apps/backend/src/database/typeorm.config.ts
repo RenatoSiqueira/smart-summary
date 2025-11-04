@@ -6,7 +6,10 @@ config({ path: ['.env.local', '.env'] });
 export const typeormConfig: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: ['src/database/entities/**/*.entity{.ts,.js}'],
+  entities: [
+    'src/database/entities/**/*.entity{.ts,.js}',
+    'src/**/*.entity{.ts,.js}',
+  ],
   migrations: ['src/database/migrations/**/*{.ts,.js}'],
   synchronize: false,
   logging:

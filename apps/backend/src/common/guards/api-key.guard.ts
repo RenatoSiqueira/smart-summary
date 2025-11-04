@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { AppConfig } from '../../config/config.interface';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
@@ -24,7 +25,13 @@ export class ApiKeyGuard implements CanActivate {
       throw new UnauthorizedException('API key validation is not configured');
     }
 
-    if (apiKey !== validApiKey) {
+    const apiKeyBuffer = Buffer.from(apiKey);
+    const validApiKeyBuffer = Buffer.from(validApiKey);
+
+    if (
+      apiKeyBuffer.length !== validApiKeyBuffer.length ||
+      !timingSafeEqual(apiKeyBuffer, validApiKeyBuffer)
+    ) {
       throw new UnauthorizedException('Invalid API key');
     }
 

@@ -58,6 +58,13 @@ export class AnalyticsController {
     @Query('endDate', new ParseDatePipe()) endDate?: Date,
     @Query('clientIp') clientIp?: string,
   ): Promise<AnalyticsResponseDto> {
+    // Validate date range
+    if (startDate && endDate && startDate > endDate) {
+      throw new BadRequestException(
+        'startDate must be before or equal to endDate',
+      );
+    }
+
     return await this.analyticsService.getMetrics(startDate, endDate, clientIp);
   }
 }

@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
-import { SummaryRequest } from '../database/entities/summary-request.entity';
+import { SummaryRequest } from '../summary/entities/summary-request.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SummaryRequest]), ConfigModule],

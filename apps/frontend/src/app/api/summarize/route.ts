@@ -1,3 +1,4 @@
+'use server';
 import { NextRequest } from 'next/server';
 import { getApiKey } from '@/shared/lib/http-client';
 

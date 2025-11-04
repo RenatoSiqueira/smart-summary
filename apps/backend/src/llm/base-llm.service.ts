@@ -8,12 +8,14 @@ import {
   LLMRateLimitError,
   SummarizeResult,
 } from './interfaces';
+import { Logger } from '@nestjs/common';
 
 const DEFAULT_MAX_TOKENS = 500;
 
 export abstract class BaseLLMService implements ILLMService {
   protected readonly apiKey: string;
   protected readonly apiUrl: string;
+  protected readonly logger: Logger;
 
   constructor(
     protected readonly configService: ConfigService,
@@ -22,6 +24,7 @@ export abstract class BaseLLMService implements ILLMService {
   ) {
     this.apiKey = apiKey;
     this.apiUrl = apiUrl;
+    this.logger = new Logger(BaseLLMService.name);
   }
 
   streamSummarize(
@@ -132,10 +135,28 @@ export abstract class BaseLLMService implements ILLMService {
                 });
               }
 
+              // Merge usage data (some providers send partial usage in chunks)
               if (parsed.usage) {
-                usageData = parsed.usage;
+                usageData = {
+                  ...usageData,
+                  ...parsed.usage,
+                  // Preserve token counts if new usage doesn't have them
+                  prompt_tokens:
+                    parsed.usage.prompt_tokens || usageData?.prompt_tokens || 0,
+                  completion_tokens:
+                    parsed.usage.completion_tokens ||
+                    usageData?.completion_tokens ||
+                    0,
+                  total_tokens:
+                    parsed.usage.total_tokens || usageData?.total_tokens || 0,
+                };
               }
-            } catch (e) {}
+            } catch (e) {
+              this.logger.warn(
+                `Failed to parse SSE chunk: ${e instanceof Error ? e.message : 'Unknown error'}`,
+              );
+              continue;
+            }
           }
         }
       }
@@ -224,6 +245,7 @@ export abstract class BaseLLMService implements ILLMService {
   /**
    * Map API response to SummarizeResult
    * If usage data is not available, estimates tokens based on text length
+   * Tries to use cost from API response if available, otherwise calculates it
    */
   protected mapResponseToResult(
     data: any,
@@ -262,7 +284,19 @@ export abstract class BaseLLMService implements ILLMService {
       totalTokens = promptTokens + completionTokens;
     }
 
-    const cost = this.calculateCost(model, promptTokens, completionTokens);
+    // Try to use cost from API response if available (some providers return this)
+    let cost: number;
+    if (usage.total_cost !== undefined && usage.total_cost !== null) {
+      cost = usage.total_cost;
+    } else if (
+      usage.prompt_cost !== undefined &&
+      usage.completion_cost !== undefined
+    ) {
+      cost = usage.prompt_cost + usage.completion_cost;
+    } else {
+      // Fallback to calculated cost
+      cost = this.calculateCost(model, promptTokens, completionTokens);
+    }
 
     return {
       summary,

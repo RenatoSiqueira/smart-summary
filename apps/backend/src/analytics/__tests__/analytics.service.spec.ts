@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { SelectQueryBuilder } from 'typeorm';
 import { AnalyticsService } from '../analytics.service';
-import { SummaryRequest } from '../../database/entities/summary-request.entity';
+import { SummaryRequest } from '../../summary/entities/summary-request.entity';
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;

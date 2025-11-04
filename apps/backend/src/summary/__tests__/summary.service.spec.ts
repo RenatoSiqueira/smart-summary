@@ -440,7 +440,7 @@ describe('SummaryService', () => {
       repository.findOne.mockResolvedValue(createdRequest);
       llmService.streamSummarize.mockReturnValue(of(...mockChunks));
 
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       const chunks = await firstValueFrom(
         service.streamSummarize(mockText).pipe(toArray()),
@@ -458,14 +458,12 @@ describe('SummaryService', () => {
       });
 
       // Verify error was logged with correct format
-      expect(consoleSpy).toHaveBeenCalled();
-      const errorCall = consoleSpy.mock.calls[0];
-      expect(errorCall).toBeDefined();
-      expect(errorCall?.[0]).toBe('Failed to update summary request:');
-      expect(errorCall?.[1]).toBeInstanceOf(Error);
-      expect((errorCall?.[1] as Error).message).toBe('Update error');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Failed to update summary request ${createdRequest.id}:`,
+        updateError,
+      );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     }, 10000);
   });
 
@@ -475,16 +473,14 @@ describe('SummaryService', () => {
       const error = new Error('Test error message');
 
       repository.update.mockResolvedValue(undefined as any);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       // Use reflection to access private method for testing
       await (service as any).handleError(requestId, error);
 
       // Verify error was logged with context
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `[SummaryService] Summary request ${requestId} failed:`,
-        ),
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Summary request ${requestId} failed:`,
         expect.objectContaining({
           requestId,
           errorType: 'Error',
@@ -501,7 +497,7 @@ describe('SummaryService', () => {
         }),
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
 
     it('should handle string errors', async () => {
@@ -509,7 +505,7 @@ describe('SummaryService', () => {
       const error = 'String error message';
 
       repository.update.mockResolvedValue(undefined as any);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       await (service as any).handleError(requestId, error);
 
@@ -521,7 +517,7 @@ describe('SummaryService', () => {
         }),
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
 
     it('should handle unknown error types', async () => {
@@ -529,7 +525,7 @@ describe('SummaryService', () => {
       const error = { code: 500, message: 'Unknown error' };
 
       repository.update.mockResolvedValue(undefined as any);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       await (service as any).handleError(requestId, error);
 
@@ -542,7 +538,7 @@ describe('SummaryService', () => {
         }),
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
 
     it('should handle update failures gracefully', async () => {
@@ -551,19 +547,17 @@ describe('SummaryService', () => {
       const updateError = new Error('Database update failed');
 
       repository.update.mockRejectedValue(updateError);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       await (service as any).handleError(requestId, error);
 
       // Should log the update failure
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `[SummaryService] Failed to update error info for request ${requestId}:`,
-        ),
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Failed to update error info for request ${requestId}:`,
         updateError,
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
 
     it('should extract error type correctly', async () => {
@@ -571,19 +565,19 @@ describe('SummaryService', () => {
       const error = new TypeError('Type error');
 
       repository.update.mockResolvedValue(undefined as any);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
 
       await (service as any).handleError(requestId, error);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.any(String),
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Summary request ${requestId} failed:`,
         expect.objectContaining({
           errorType: 'TypeError',
           errorMessage: 'Type error',
         }),
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
   });
 

@@ -7,6 +7,8 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1';
 
 @Injectable()
 export class OpenRouterService extends BaseLLMService {
+  protected readonly providerName = 'openrouter';
+
   constructor(configService: ConfigService<{ app: AppConfig }>) {
     const llmConfig = configService.get<AppConfig>('app')?.llm;
     if (!llmConfig?.openrouterApiKey) {

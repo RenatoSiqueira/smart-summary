@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@smart-summary/types'],
+  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: false,
   },

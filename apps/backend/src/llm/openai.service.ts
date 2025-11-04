@@ -7,6 +7,8 @@ const OPENAI_API_URL = 'https://api.openai.com/v1';
 
 @Injectable()
 export class OpenAIService extends BaseLLMService {
+  protected readonly providerName = 'openai';
+
   constructor(configService: ConfigService<{ app: AppConfig }>) {
     const llmConfig = configService.get<AppConfig>('app')?.llm;
     if (!llmConfig?.openaiApiKey) {
