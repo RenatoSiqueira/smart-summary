@@ -47,7 +47,7 @@ export function ThemeSelector() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-background">
         <DropdownMenuItem
           onClick={() => setTheme('light')}
           className="cursor-pointer"
