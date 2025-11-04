@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from '@/shared/components/ui/sidebar';
 import Link from 'next/link';
-import { ThemeSelector } from '@/shared/components/theme-selector';
+import { ThemeSelector } from '@/shared/components/ThemeSelector';
 import { motion } from 'framer-motion';
 
 const navItems = [

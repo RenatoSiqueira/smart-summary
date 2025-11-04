@@ -1,4 +1,4 @@
-import { AppSidebar } from '@/shared/components/app-sidebar';
+import { AppSidebar } from '@/shared/components/AppSidebar';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
 import { AnalyticsDashboard } from '@/app/analytics/components/AnalyticsDashboard';
 import { BarChart3 } from 'lucide-react';

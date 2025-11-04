@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AppSidebar } from '@/shared/components/app-sidebar';
+import { AppSidebar } from '@/shared/components/AppSidebar';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
 import { SummarizeForm } from '@/app/summarize/components/SummarizeForm';
 import { StreamingSummary } from '@/app/summarize/components/StreamingSummary';
