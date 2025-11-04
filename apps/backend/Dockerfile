@@ -46,13 +46,22 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate && \
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY --from=builder /app/turbo.json ./
 
+# Copy TypeScript configuration files (needed for migrations)
+# Copy root tsconfig.json (needed because backend tsconfig extends it)
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+# Copy backend TypeScript config files
+COPY --from=builder /app/apps/backend/tsconfig*.json ./apps/backend/
+
 # Copy built packages
 COPY --from=builder /app/packages/types ./packages/types
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
 
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod
+# Copy source files needed for migrations (typeorm config and migration files)
+COPY --from=builder /app/apps/backend/src/database ./apps/backend/src/database
+
+# Install dependencies (including dev dependencies for migrations)
+RUN pnpm install --frozen-lockfile
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
