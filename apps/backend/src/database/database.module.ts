@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { join } from 'path';
 import { AppConfig } from '../config/config.interface';
 import { SummaryRequest } from '../summary/entities/summary-request.entity';
 
@@ -25,12 +26,8 @@ import { SummaryRequest } from '../summary/entities/summary-request.entity';
         return {
           type: 'postgres',
           url: databaseUrl,
-          entities: [
-            SummaryRequest,
-            __dirname + '/entities/**/*.entity{.ts,.js}',
-            __dirname + '/../**/*.entity{.ts,.js}',
-          ],
-          migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+          entities: [SummaryRequest],
+          migrations: [join(__dirname, 'migrations', '**', '*{.ts,.js}')],
           synchronize: false,
           logging:
             nodeEnv === 'development'
