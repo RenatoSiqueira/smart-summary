@@ -220,9 +220,9 @@ User requests analytics → Next.js Server Action → NestJS Controller
 
 For detailed architecture documentation, see:
 
-- [System Architecture & Technologies](./docs/2-system-architecture-and-technologies.md)
-- [Data Flow & Processing](./docs/6-data-flow-and-processing.md)
-- [Modules & Classes](./docs/5-modules-and-classes.md)
+- [System Architecture](./docs/2-system-architecture.md) - Complete technical architecture and design patterns
+- [API Documentation](./docs/3-api-documentation.md) - Complete API reference and integration guide
+- [Database Schema](./docs/4-database-schema.md) - Database design and data management
 
 ## Assumptions
 
@@ -247,7 +247,7 @@ For detailed architecture documentation, see:
 3. **Database Backups**: Managed database service handles backups
 4. **Monitoring**: Basic console logging sufficient initially (can add structured logging later)
 
-For a complete list of assumptions and trade-offs, see [Assumptions and Trade-offs](./docs/assumptions-and-tradeoffs.md).
+For detailed architecture and design documentation, see the [Documentation Index](./docs/README.md).
 
 ## Future Improvements
 
@@ -272,7 +272,7 @@ For a complete list of assumptions and trade-offs, see [Assumptions and Trade-of
 - **Multiple Summary Formats**: Selectable formats (bullet points, paragraph, table)
 - **Token Estimation Accuracy**: Use actual tokenizer libraries (tiktoken) instead of heuristic
 
-For a detailed roadmap, see [Future Considerations & Maintenance](./docs/10-future-considerations-and-maintenance.md).
+For detailed technical documentation, see the [Documentation Index](./docs/README.md).
 
 ## Scaling Considerations
 
@@ -315,14 +315,18 @@ For a detailed roadmap, see [Future Considerations & Maintenance](./docs/10-futu
 ### Current Security Measures
 
 1. **API Key Authentication**: Server-to-server authentication via API key (never exposed to client)
-2. **Input Validation**: All inputs validated via DTOs with class-validator
-3. **SQL Injection Prevention**: TypeORM parameterized queries
-4. **Security Headers**: Helmet middleware for HTTP security headers
-5. **HTTPS**: All external communication over HTTPS (in production)
+2. **CORS Protection**: Production environment requires explicit allowed origins configuration
+3. **Input Validation**: All inputs validated via DTOs with class-validator
+4. **SQL Injection Prevention**: TypeORM parameterized queries
+5. **Security Headers**: Helmet middleware for HTTP security headers
+6. **HTTPS**: All external communication over HTTPS (in production)
 
 ### Security Recommendations for Production
 
-1. **Restrict CORS**: Configure allowed origins explicitly (currently allows all origins)
+1. **CORS Configuration**: CORS is already properly configured:
+   - **Development**: Allows all origins (correct for local development)
+   - **Production**: Requires `ALLOWED_ORIGINS` environment variable to be set (throws error if not configured)
+   - Ensure `ALLOWED_ORIGINS` is set in production: `ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com`
 2. **Rate Limiting**: Implement rate limiting for API endpoints (currently handled by LLM providers)
 3. **WAF**: Use Web Application Firewall (Cloudflare, AWS WAF)
 4. **Secrets Management**: Use secure secret management (AWS Secrets Manager, HashiCorp Vault)
@@ -337,7 +341,7 @@ For a detailed roadmap, see [Future Considerations & Maintenance](./docs/10-futu
 - **PCI DSS**: Not applicable (no payment processing)
 - **HIPAA**: Not applicable unless specifically configured for healthcare use
 
-For detailed security documentation, see [Security & Compliance](./docs/7-security-and-compliance.md).
+For detailed security documentation, see [Security & Compliance](./docs/7-security-compliance.md).
 
 ## Development
 
@@ -391,19 +395,17 @@ cd apps/frontend && pnpm test
 
 ## Documentation
 
-Comprehensive documentation is available in the `docs/` directory:
+Comprehensive documentation is available in the `docs/` directory. For a complete overview, see the [Documentation Index](./docs/README.md).
 
-- [Executive Summary](./docs/1-executive-summary.md)
-- [System Architecture & Technologies](./docs/2-system-architecture-and-technologies.md)
-- [Design Patterns & Frameworks](./docs/3-design-patterns-and-frameworks.md)
-- [Data Structure & Database Schema](./docs/4-data-structure-and-database-schema.md)
-- [Modules & Classes](./docs/5-modules-and-classes.md)
-- [Data Flow & Processing](./docs/6-data-flow-and-processing.md)
-- [Security & Compliance](./docs/7-security-and-compliance.md)
-- [Testing & Quality](./docs/8-testing-and-quality.md)
-- [Deployment & Environment](./docs/9-deployment-and-environment.md)
-- [Future Considerations & Maintenance](./docs/10-future-considerations-and-maintenance.md)
-- [Assumptions and Trade-offs](./docs/assumptions-and-tradeoffs.md)
+**Key Documentation Files:**
+
+- [Executive Summary](./docs/1-executive-summary.md) - Project overview and business value
+- [System Architecture](./docs/2-system-architecture.md) - Technical architecture and design patterns
+- [API Documentation](./docs/3-api-documentation.md) - Complete API reference and integration guide
+- [Database Schema](./docs/4-database-schema.md) - Database design and data management
+- [Deployment Guide](./docs/5-deployment-guide.md) - Deployment and operations guide
+- [Development Guide](./docs/6-development-guide.md) - Developer workflows and best practices
+- [Security & Compliance](./docs/7-security-compliance.md) - Security measures and compliance considerations
 
 ## License
 
@@ -412,7 +414,3 @@ UNLICENSED - Private project
 ## Author
 
 Renato Siqueira (https://github.com/renatosiqueira)
-
----
-
-**Note**: This application was built as a coding challenge demonstrating full-stack development skills with modern technologies and best practices.
