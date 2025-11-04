@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig } from '../config/config.interface';
+import { SummaryRequest } from '../summary/entities/summary-request.entity';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AppConfig } from '../config/config.interface';
           type: 'postgres',
           url: databaseUrl,
           entities: [
+            SummaryRequest,
             __dirname + '/entities/**/*.entity{.ts,.js}',
             __dirname + '/../**/*.entity{.ts,.js}',
           ],
