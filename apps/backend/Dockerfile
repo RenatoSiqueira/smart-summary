@@ -2,7 +2,7 @@
 FROM node:18-alpine AS base
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@7.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # Set working directory
 WORKDIR /app
@@ -39,7 +39,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # Install pnpm and netcat for health checks
-RUN corepack enable && corepack prepare pnpm@7.0.0 --activate && \
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate && \
     apk add --no-cache netcat-openbsd
 
 # Copy package files
