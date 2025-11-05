@@ -31,6 +31,7 @@ An AI-powered text summarization web application that enables users to generate 
 - **Monorepo**: pnpm workspaces with Turborepo
 - **Containerization**: Docker & Docker Compose
 - **Database**: PostgreSQL 15
+- **Cloud Platform**: Fly.io (deployment ready)
 
 ## Prerequisites
 
@@ -38,6 +39,7 @@ An AI-powered text summarization web application that enables users to generate 
 - **pnpm**: >= 8.0.0
 - **PostgreSQL**: 15+ (for local development)
 - **Docker** (optional, for containerized deployment)
+- **Fly.io CLI** (optional, for cloud deployment)
 
 ## Setup Instructions
 
@@ -101,7 +103,49 @@ The easiest way to run the application is using Docker Compose:
 
 For more Docker commands and troubleshooting, see [DOCKER.md](./DOCKER.md).
 
-### Option 2: Local Development
+### Option 2: Fly.io Deployment (Cloud)
+
+Deploy the application to Fly.io cloud platform:
+
+1. **Prerequisites**:
+   - [Fly.io account](https://fly.io) (sign up for free)
+   - [Fly.io CLI](https://fly.io/docs/hands-on/install-flyctl/) installed
+   - Authenticated with Fly.io: `fly auth login`
+
+2. **Quick Start (Automated)**:
+
+   Use the provided deployment script:
+
+   ```bash
+   ./deploy.sh
+   ```
+
+   This interactive script will guide you through:
+   - Creating the PostgreSQL database
+   - Deploying the backend
+   - Running database migrations
+   - Deploying the frontend
+   - Configuring CORS
+
+   **Optional**: Pre-fill values using environment variables:
+
+   ```bash
+   export OPENROUTER_API_KEY="your-key"
+   export OPENROUTER_DEFAULT_MODEL="openai/gpt-4o-mini"
+   ./deploy.sh
+   ```
+
+3. **Manual Deployment**:
+
+   See the detailed [Fly.io Deployment Guide](./FLY_DEPLOYMENT.md) for step-by-step manual deployment instructions.
+
+4. **Access the application**:
+   - Frontend: `https://smart-summary-frontend.fly.dev`
+   - Backend API: `https://smart-summary-backend.fly.dev/api`
+
+For detailed Fly.io deployment instructions, see [FLY_DEPLOYMENT.md](./FLY_DEPLOYMENT.md).
+
+### Option 3: Local Development
 
 1. **Clone the repository**:
 
@@ -355,7 +399,9 @@ Smart-Summary-App/
 ├── packages/
 │   └── types/             # Shared TypeScript types
 ├── docs/                  # Architecture and design documentation
-└── docker-compose.yml     # Docker Compose configuration
+├── docker-compose.yml     # Docker Compose configuration
+├── deploy.sh              # Fly.io deployment script
+└── FLY_DEPLOYMENT.md      # Fly.io deployment guide
 ```
 
 ### Available Scripts
@@ -366,6 +412,7 @@ Smart-Summary-App/
 - `pnpm build`: Build all apps
 - `pnpm lint`: Lint all apps
 - `pnpm test`: Run tests for all apps
+- `./deploy.sh`: Interactive Fly.io deployment script (creates database, deploys backend/frontend, runs migrations)
 
 **Backend** (`apps/backend`):
 
@@ -404,6 +451,7 @@ Comprehensive documentation is available in the `docs/` directory. For a complet
 - [API Documentation](./docs/3-api-documentation.md) - Complete API reference and integration guide
 - [Database Schema](./docs/4-database-schema.md) - Database design and data management
 - [Deployment Guide](./docs/5-deployment-guide.md) - Deployment and operations guide
+- [Fly.io Deployment Guide](./FLY_DEPLOYMENT.md) - Fly.io cloud deployment guide
 - [Development Guide](./docs/6-development-guide.md) - Developer workflows and best practices
 - [Security & Compliance](./docs/7-security-compliance.md) - Security measures and compliance considerations
 
