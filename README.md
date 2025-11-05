@@ -1,5 +1,9 @@
 # Smart Summary App
 
+[![CI](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/ci.yml/badge.svg)](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/ci.yml)
+[![Deploy Backend](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/deploy-backend.yml/badge.svg)](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/deploy-backend.yml)
+[![Deploy Frontend](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/deploy-frontend.yml/badge.svg)](https://github.com/renatosiqueira/Smart-Summary-App/actions/workflows/deploy-frontend.yml)
+
 An AI-powered text summarization web application that enables users to generate concise summaries from long-form text content using Large Language Models (LLMs). The application features real-time streaming responses and comprehensive analytics for monitoring usage, token consumption, and costs.
 
 ## Features
@@ -452,6 +456,7 @@ Comprehensive documentation is available in the `docs/` directory. For a complet
 - [Database Schema](./docs/4-database-schema.md) - Database design and data management
 - [Deployment Guide](./docs/5-deployment-guide.md) - Deployment and operations guide
 - [Fly.io Deployment Guide](./FLY_DEPLOYMENT.md) - Fly.io cloud deployment guide
+- [CI/CD Pipeline](./.github/CICD.md) - Continuous Integration and Deployment documentation
 - [Development Guide](./docs/6-development-guide.md) - Developer workflows and best practices
 - [Security & Compliance](./docs/7-security-compliance.md) - Security measures and compliance considerations
 
