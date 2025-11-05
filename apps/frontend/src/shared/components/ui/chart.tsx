@@ -143,7 +143,7 @@ const ChartTooltipContent = React.forwardRef<
       const itemConfig = getPayloadConfigFromPayload(config, item, key)
       const value =
         !labelKey && typeof label === "string"
-          ? config[label as keyof typeof config]?.label || label
+          ? (label in config ? config[label]?.label : undefined) || label
           : itemConfig?.label
 
       if (labelFormatter) {
@@ -201,7 +201,13 @@ const ChartTooltipContent = React.forwardRef<
                   )}
                 >
                   {formatter && item?.value !== undefined && item.name ? (
-                    formatter(item.value, item.name, item, index, item.payload)
+                    formatter(
+                      item.value,
+                      item.name,
+                      item,
+                      index,
+                      item.payload as Parameters<typeof formatter>[4]
+                    )
                   ) : (
                     <>
                       {itemConfig?.icon ? (
@@ -290,7 +296,10 @@ const ChartLegendContent = React.forwardRef<
         {payload
           .filter((item) => item.type !== "none")
           .map((item) => {
-            const key = `${nameKey || item.dataKey || "value"}`
+            const dataKey = item.dataKey
+              ? String(item.dataKey)
+              : "value"
+            const key = `${nameKey || dataKey}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
 
             return (
@@ -356,7 +365,9 @@ function getPayloadConfigFromPayload(
 
   return configLabelKey in config
     ? config[configLabelKey]
-    : config[key as keyof typeof config]
+    : key in config
+      ? config[key]
+      : undefined
 }
 
 export {
