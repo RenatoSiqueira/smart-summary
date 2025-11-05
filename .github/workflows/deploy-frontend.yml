@@ -22,23 +22,6 @@ jobs:
       - name: Setup Fly.io CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Create app if it doesn't exist
-        run: |
-          # Check if app already exists
-          if flyctl apps list 2>/dev/null | grep -q "smart-summary-frontend"; then
-            echo "App already exists, skipping creation"
-          else
-            echo "App does not exist, creating..."
-            if flyctl apps create smart-summary-frontend --org personal; then
-              echo "App created successfully"
-            else
-              echo "Failed to create app"
-              exit 1
-            fi
-          fi
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only --config apps/frontend/fly.toml --app smart-summary-frontend
         env:
