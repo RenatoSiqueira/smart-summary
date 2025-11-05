@@ -29,6 +29,6 @@ jobs:
 
       - name: Run migrations
         run: |
-          flyctl ssh console --app smart-summary-backend --command "cd /app/apps/backend && pnpm --filter @smart-summary/backend migration:run"
+          flyctl ssh console --app smart-summary-backend --command "sh -c 'cd /app/apps/backend && pnpm --filter @smart-summary/backend migration:run'"
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_BACKEND }}
