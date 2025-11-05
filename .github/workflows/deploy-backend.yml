@@ -1,0 +1,36 @@
+name: Deploy Backend to Fly.io
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'apps/backend/**'
+      - 'packages/types/**'
+      - 'apps/backend/Dockerfile'
+      - 'apps/backend/fly.toml'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --config apps/backend/fly.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        working-directory: apps/backend
+
+      - name: Run migrations
+        run: |
+          flyctl ssh console --app smart-summary-backend --command "cd /app/apps/backend && pnpm --filter @smart-summary/backend migration:run"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
