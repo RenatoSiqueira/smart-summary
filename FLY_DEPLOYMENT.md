@@ -283,11 +283,17 @@ https://smart-summary-frontend.fly.dev
 
 ### Prerequisites
 
-1. **Fly.io API Token**: Generate a token
+1. **Fly.io API Token**: Generate deploy tokens for each app
 
    ```bash
-   fly tokens create deploy
+   # Create token for backend
+   fly tokens create deploy -a smart-summary-backend
+   
+   # Create token for frontend (optional - can use same token)
+   fly tokens create deploy -a smart-summary-frontend
    ```
+   
+   **Note:** Copy the entire token output (it's a long string) and save it securely. You can use the backend token for both apps if they're in the same organization.
 
 2. **GitHub Secrets**: Add the token to GitHub
    - Go to: Repository → Settings → Secrets and variables → Actions

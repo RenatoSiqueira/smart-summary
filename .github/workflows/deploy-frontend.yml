@@ -23,8 +23,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --config apps/frontend/fly.toml
+        run: flyctl deploy --remote-only --config apps/frontend/fly.toml --app smart-summary-frontend
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        working-directory: apps/frontend
 
