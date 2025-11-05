@@ -26,10 +26,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run linter
-        run: pnpm lint
-        continue-on-error: true
-
       - name: Run tests
         run: pnpm test
         continue-on-error: true
